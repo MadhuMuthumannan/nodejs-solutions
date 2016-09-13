@@ -1,15 +1,16 @@
-var filterDir = require('./filtered-ls.js');
+var fs = require('fs')
+var path = require('path')
 
-var dirPath = process.argv[2],
-    extension = process.argv[3];
+module.exports = function (obj, test, callback) {
 
-filterDir(dirPath, extension, function (err, list) {
-  if (err) {
-    console.log('An error happened when reading ' + dirPath);
-    return err;
-  }
-  
-  list.forEach(function (filename) {
-    console.log(filename);
-  });
-});
+  fs.readdir(obj, function (err, list) {
+    if (err)
+      return callback(err)
+
+    list = list.filter(function (file) {
+      return path.extname(file) === '.' + test
+    })
+
+    callback(null, list)
+  })
+}
